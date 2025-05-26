@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📍 เลือกตำแหน่ง</title>
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; }
+    #map { height: 100%; width: 100%; }
+    #linkDisplay {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      right: 10px;
+      background: white;
+      padding: 10px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      font-size: 14px;
+      text-align: center;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="linkDisplay">แตะที่แผนที่เพื่อคัดลอกลิงก์พิกัด 📍</div>
+
+  <script>
+    let map, marker;
+    function initMap() {
+      const center = { lat: 13.736717, lng: 100.523186 };
+      map = new google.maps.Map(document.getElementById("map"), {
+        center,
+        zoom: 13,
+      });
+
+      map.addListener("click", (e) => {
+        const lat = e.latLng.lat();
+        const lng = e.latLng.lng();
+        const link = `https://www.google.com/maps?q=${lat},${lng}`;
+        document.getElementById("linkDisplay").innerText = `📋 คัดลอกแล้ว: ${link}`;
+        navigator.clipboard.writeText(link);
+
+        if (!marker) {
+          marker = new google.maps.Marker({
+            position: e.latLng,
+            map: map,
+          });
+        } else {
+          marker.setPosition(e.latLng);
+        }
+      });
+    }
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4h02XblNyEBG1tszHsGVLY0-dTTeiVMk&callback=initMap" async defer></script>
+</body>
+</html>
